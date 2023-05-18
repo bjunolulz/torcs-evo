@@ -51,6 +51,25 @@ def fitness_func(self, solution, sol_idx):
     return sum_reward
 
 
+def play_game(env):
+    model = Sequential()
+    model.add(Dense(300, input_shape=(None, 29), activation='relu'))
+    model.add(Dense(300, activation='relu'))
+    model.add(Dense(action_space_size, activation='linear'))
+    model.load_weights("torcs_weights")
+
+    ob = env.reset()
+    while True:
+        state = np.hstack((ob.angle, ob.track, ob.trackPos, ob.speedX, ob.speedY, ob.speedZ, ob.wheelSpinVel/100.0, ob.rpm))
+        q_values = model.predict(state.reshape(1, state.shape[0]))
+        action = np.zeros([1,3])
+        action[0][0] = q_values[0][0]
+        action[0][1] = q_values[0][1]
+        #action[0][2] = q_values[0][2]
+        observation_next, reward, done, trunc = env.step(action[0])
+        ob = observation_next
+        
+
 def callback_generation(ga_instance):
     print("Generation = {generation}".format(generation=ga_instance.generations_completed))
     print("Fitness    = {fitness}".format(fitness=ga_instance.best_solution()[1]))
@@ -63,8 +82,8 @@ action_space_size = env.action_space.shape[0]
 flag = 0
 
 model = Sequential()
-model.add(Dense(16, input_shape=(None, 29), activation='relu'))
-model.add(Dense(16, activation='relu'))
+model.add(Dense(300, input_shape=(None, 29), activation='relu'))
+model.add(Dense(300, activation='relu'))
 model.add(Dense(action_space_size, activation='linear'))
 model.summary()
 
@@ -81,14 +100,19 @@ ga_instance = pygad.GA(num_generations=500,
                        keep_parents=-1,
                        on_generation=callback_generation)
 
-ga_instance.run()
+train = False
+if train:
+    ga_instance.run()
 
-ga_instance.plot_result(title="PyGAD & Keras - Iteration vs. Fitness", linewidth=4)
+    ga_instance.plot_result(title="PyGAD & Keras - Iteration vs. Fitness", linewidth=4)
 
-solution, solution_fitness, solution_idx = ga_instance.best_solution()
-print("Fitness value of the best solution = {solution_fitness}".format(solution_fitness=solution_fitness))
-print("Index of the best solution : {solution_idx}".format(solution_idx=solution_idx))
+    solution, solution_fitness, solution_idx = ga_instance.best_solution()
+    print("Fitness value of the best solution = {solution_fitness}".format(solution_fitness=solution_fitness))
+    print("Index of the best solution : {solution_idx}".format(solution_idx=solution_idx))
 
-model_weights_matrix = pygad.kerasga.model_weights_as_matrix(model=model, weights_vector=solution)
-model.set_weights(weights=model_weights_matrix)
-model.save("torcs_weights")
+    model_weights_matrix = pygad.kerasga.model_weights_as_matrix(model=model, weights_vector=solution)
+    model.set_weights(weights=model_weights_matrix)
+    model.save("torcs_weights")
+
+else:
+    play_game(env)
