@@ -2,14 +2,13 @@ import gym
 from gym import spaces
 import numpy as np
 # from os import path
-import snakeoil3_gym as snakeoil3
+import snakeoil3_gym2 as snakeoil3
 import numpy as np
 import copy
 import collections as col
 import os
 import time
 
-sudo_pw = 'btorbari'
 
 class TorcsEnv:
     terminal_judge_start = 100  # If after 100 timestep still no progress, terminated
@@ -26,14 +25,14 @@ class TorcsEnv:
         self.initial_run = True
 
         ##print("launch torcs")
-        os.system(f'echo {sudo_pw}|sudo -S pkill torcs')
+        os.system('pkill torcs')
         time.sleep(0.5)
         if self.vision is True:
-            os.system(f'echo {sudo_pw}|sudo -S torcs -nofuel -nodamage -nolaptime -vision &')
+            os.system('torcs -nofuel -nodamage -nolaptime -vision &')
         else:
-            os.system(f'echo {sudo_pw}|sudo -S torcs -nofuel -nolaptime &')
+            os.system('torcs -nofuel -nolaptime &')
         time.sleep(0.5)
-        os.system(f'echo {sudo_pw}|sudo -S sh autostart.sh')
+        os.system('sh autostart.sh')
         time.sleep(0.5)
 
         """
@@ -140,15 +139,6 @@ class TorcsEnv:
         progress = sp*np.cos(obs['angle']) - np.abs(sp*np.sin(obs['angle'])) - sp * np.abs(obs['trackPos'])
         reward = progress
 
-        if action_torcs['accel'] > 0.3 and action_torcs['brake'] < 0.05:
-            reward += 10
-
-        # if action_torcs['brake'] > 0.5:
-        #     reward = -10
-
-        # if (action_torcs['steer'] > 0.5 or action_torcs['steer'] < -0.5) and action_torcs['accel'] < 0.05:
-        #     reward = -10
-
         # collision detection
         if obs['damage'] - obs_pre['damage'] > 0:
             reward = -1
@@ -156,14 +146,13 @@ class TorcsEnv:
         # Termination judgement #########################
         episode_terminate = False
         if (abs(track.any()) > 1 or abs(trackPos) > 1):  # Episode is terminated if the car is out of track
-            reward = -100
+            reward = -200
             episode_terminate = True
             client.R.d['meta'] = True
 
         if self.terminal_judge_start < self.time_step: # Episode terminates if the progress of agent is small
             if progress < self.termination_limit_progress:
                 print("No progress")
-                #reward = -200
                 episode_terminate = True
                 client.R.d['meta'] = True
 
@@ -210,21 +199,21 @@ class TorcsEnv:
         return self.get_obs()
 
     def end(self):
-        os.system(f'echo {sudo_pw}|sudo -S pkill torcs')
+        os.system('pkill torcs')
 
     def get_obs(self):
         return self.observation
 
     def reset_torcs(self):
        #print("relaunch torcs")
-        os.system(f'echo {sudo_pw}|sudo -S pkill torcs')
+        os.system('pkill torcs')
         time.sleep(0.5)
         if self.vision is True:
-            os.system(f'echo {sudo_pw}|sudo -S torcs -nofuel -nodamage -nolaptime -vision &')
+            os.system('torcs -nofuel -nodamage -nolaptime -vision &')
         else:
-            os.system(f'echo {sudo_pw}|sudo -S torcs -nofuel -nolaptime &')
+            os.system('torcs -nofuel -nolaptime &')
         time.sleep(0.5)
-        os.system(f'echo {sudo_pw}|sudo -S sh autostart.sh')
+        os.system('sh autostart.sh')
         time.sleep(0.5)
 
     def agent_to_torcs(self, u):
@@ -261,7 +250,7 @@ class TorcsEnv:
                      'track', 
                      'trackPos',
                      'wheelSpinVel']
-            Observation = col.namedtuple('Observation', names)
+            Observation = col.namedtuple('Observaion', names)
             return Observation(focus=np.array(raw_obs['focus'], dtype=np.float32)/200.,
                                speedX=np.array(raw_obs['speedX'], dtype=np.float32)/300.0,
                                speedY=np.array(raw_obs['speedY'], dtype=np.float32)/300.0,
@@ -282,7 +271,7 @@ class TorcsEnv:
                      'trackPos',
                      'wheelSpinVel',
                      'img']
-            Observation = col.namedtuple('Observation', names)
+            Observation = col.namedtuple('Observaion', names)
 
             # Get RGB from observation
             image_rgb = self.obs_vision_to_image_rgb(raw_obs[names[8]])
