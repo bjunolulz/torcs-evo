@@ -26,6 +26,8 @@ def fitness_func(solution, sol_idx):
         model_weights_matrix = pygad.kerasga.model_weights_as_matrix(model=model, weights_vector=best_solution)
         model.set_weights(weights=model_weights_matrix)
         model.save("torcs_weights")
+        print(ga_instance.last_generation_fitness)
+        sys.stdout.flush()
         ob = env.reset(relaunch=True)
     
     else:
@@ -59,7 +61,7 @@ def fitness_func(solution, sol_idx):
 
 
 def play_game(env, model):
-    model.load_weights("torcs_weights copy")
+    model.load_weights("torcs_weights")
 
     ob = env.reset()
     while True:
@@ -114,7 +116,7 @@ model.summary()
 #create keras model
 keras_ga = pygad.kerasga.KerasGA(model=model, num_solutions=10)
 
-ga_instance = pygad.GA(num_generations=500,
+ga_instance = pygad.GA(num_generations=100,
                        num_parents_mating=5,
                        keep_parents=-1,
                        initial_population=keras_ga.population_weights,
@@ -122,8 +124,8 @@ ga_instance = pygad.GA(num_generations=500,
                        parent_selection_type="sss",
                        crossover_type="single_point",
                        mutation_type="random",
-                       mutation_percent_genes=5,
-                       mutation_probability=0.2)
+                       mutation_percent_genes=10,
+                       mutation_probability=0.3)
 
 #train or play
 train = True
@@ -139,7 +141,7 @@ if train:
     model_weights_matrix = pygad.kerasga.model_weights_as_matrix(model=model, weights_vector=solution)
     model.set_weights(weights=model_weights_matrix)
     model.save("torcs_weights")
-
+    ga_instance.save(filename='ga')
 else:
     play_game(env, model)
 
