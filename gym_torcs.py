@@ -140,8 +140,8 @@ class TorcsEnv:
         progress = sp*np.cos(obs['angle']) - np.abs(sp*np.sin(obs['angle'])) - sp * np.abs(obs['trackPos'])
         reward = progress
 
-        if action_torcs['accel'] > 0.3 and action_torcs['brake'] < 0.05:
-            reward += 10
+        # if action_torcs['accel'] > 0.3 and action_torcs['brake'] < 0.05:
+        #     reward += 10
 
         # if action_torcs['brake'] > 0.5:
         #     reward = -10
@@ -154,18 +154,18 @@ class TorcsEnv:
             reward = -1
 
         # Termination judgement #########################
-        episode_terminate = False
-        if (abs(track.any()) > 1 or abs(trackPos) > 1):  # Episode is terminated if the car is out of track
-            reward = -100
-            episode_terminate = True
-            client.R.d['meta'] = True
+        # episode_terminate = False
+        # if (abs(track.any()) > 1 or abs(trackPos) > 1):  # Episode is terminated if the car is out of track
+        #     reward = -100
+        #     episode_terminate = True
+        #     client.R.d['meta'] = True
 
-        if self.terminal_judge_start < self.time_step: # Episode terminates if the progress of agent is small
-            if progress < self.termination_limit_progress:
-                print("No progress")
-                #reward = -200
-                episode_terminate = True
-                client.R.d['meta'] = True
+        # if self.terminal_judge_start < self.time_step: # Episode terminates if the progress of agent is small
+        #     if progress < self.termination_limit_progress: #comment everything here for play, uncomment for training
+        #         print("No progress")
+        #         #reward = -200
+        #         episode_terminate = True
+        #         client.R.d['meta'] = True
 
         if np.cos(obs['angle']) < 0: # Episode is terminated if the agent runs backward
             episode_terminate = True
