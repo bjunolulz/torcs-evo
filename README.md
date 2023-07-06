@@ -11,11 +11,11 @@ This is a project with the goal of making an agent for torcs using the genetic a
 7. To run the learned agent change the path in the play_game method and set the train flag to False
 
 ## Exclaimer
-Runs only on Linux, I have not tested it on Windows, maybe try your luck with WSL
+Runs only on Linux, I have not tested it on Windows, maybe try your luck with WSL. There are two files, initial_gen.py and next_gen.py. Use initial_gen.py when starting training for x number of generations, and the continue with next_gens.py to avoid crashing.
 
 ## Problems
 I won't be adding work to this project anymore, but the problems I encountered are the following:
-1. RAM - This sucks RAM and there is a memory leak somewhere. I don't know if it is just Tensorflow or what, but for this reason the code is split into two files. I can run initial_gen.py for 100 generations without crashing and then saving the current population and running next_gens.py for another 50.
+1. RAM - This sucks RAM and there is a memory leak somewhere. I don't know if it is just Tensorflow or what, but for this reason the code is split into two files. I can run initial_gen.py for 100 generations without crashing and then saving the current population and running next_gens.py for another 50. You can run next_gens.py as many times as you want.
 2. The neural network has problems with saturation. I have managed to fix it somewhat with kernel initialization but it is still not what I wanted it to be. It cannot drive straight on the road but is pretty good in managing curves.
 
 ## Related work
