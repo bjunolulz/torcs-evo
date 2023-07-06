@@ -82,9 +82,9 @@ def create_model():
     drop2 = tf.keras.layers.Dropout(0.5)(h2) # add dropout
     #n3 = tf.keras.layers.Normalization(axis=None, mean=0.0, variance=1e-2)(drop2) # change h2 to drop2
 
-    Steering = tf.keras.layers.Dense(1, kernel_initializer=tf.keras.initializers.RandomNormal(mean=0.0, stddev=1e-4), activation='tanh', kernel_regularizer=tf.keras.regularizers.l2(0.01))(drop2)
-    Acceleration = tf.keras.layers.Dense(1, kernel_initializer=tf.keras.initializers.RandomNormal(mean=0.0, stddev=1e-4), activation='sigmoid', kernel_regularizer=tf.keras.regularizers.l2(0.01))(drop2)
-    Brake = tf.keras.layers.Dense(1, kernel_initializer=tf.keras.initializers.RandomNormal(mean=0.0, stddev=1e-4), activation='sigmoid', kernel_regularizer=tf.keras.regularizers.l2(0.01))(drop2)
+    Steering = tf.keras.layers.Dense(1, kernel_initializer=tf.keras.initializers.RandomNormal(mean=0.0, stddev=1e-3), activation='tanh', kernel_regularizer=tf.keras.regularizers.l2(0.01))(drop2)
+    Acceleration = tf.keras.layers.Dense(1, kernel_initializer=tf.keras.initializers.RandomNormal(mean=0.0, stddev=1e-3), activation='sigmoid', kernel_regularizer=tf.keras.regularizers.l2(0.01))(drop2)
+    Brake = tf.keras.layers.Dense(1, kernel_initializer=tf.keras.initializers.RandomNormal(mean=0.0, stddev=1e-3), activation='sigmoid', kernel_regularizer=tf.keras.regularizers.l2(0.01))(drop2)
 
     V = tf.keras.layers.Concatenate()([Steering, Acceleration, Brake])
     model = tf.keras.Model(inputs=S, outputs=V)
@@ -153,7 +153,7 @@ ga_instance = pygad.GA(num_generations=50,
                        parent_selection_type="sss",
                        crossover_type="single_point",
                        mutation_type="random",
-                       mutation_percent_genes=10,
+                       mutation_percent_genes=50,
                        mutation_probability=0.3,
                        mutation_by_replacement=False,
                        random_mutation_min_val=-0.1,

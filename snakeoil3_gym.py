@@ -62,7 +62,7 @@ PI= 3.14159265359
 
 data_size = 2**17
 
-sudo_pw = 'btorbari'
+sudo_pw = #sudo pwd here
 
 # Initialize help messages
 ophelp=  'Options:\n'

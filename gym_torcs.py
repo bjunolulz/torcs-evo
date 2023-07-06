@@ -9,7 +9,7 @@ import collections as col
 import os
 import time
 
-sudo_pw = 'btorbari'
+sudo_pw = #sudo pwd here
 
 class TorcsEnv:
     terminal_judge_start = 100  # If after 100 timestep still no progress, terminated
@@ -154,18 +154,18 @@ class TorcsEnv:
             reward = -1
 
         # Termination judgement #########################
-        # episode_terminate = False
-        # if (abs(track.any()) > 1 or abs(trackPos) > 1):  # Episode is terminated if the car is out of track
-        #     reward = -100
-        #     episode_terminate = True
-        #     client.R.d['meta'] = True
+        episode_terminate = False
+        if (abs(track.any()) > 1 or abs(trackPos) > 1):  # Episode is terminated if the car is out of track
+            reward = -100
+            episode_terminate = True
+            client.R.d['meta'] = True
 
-        # if self.terminal_judge_start < self.time_step: # Episode terminates if the progress of agent is small
-        #     if progress < self.termination_limit_progress: #comment everything here for play, uncomment for training
-        #         print("No progress")
-        #         #reward = -200
-        #         episode_terminate = True
-        #         client.R.d['meta'] = True
+        if self.terminal_judge_start < self.time_step: # Episode terminates if the progress of agent is small
+            if progress < self.termination_limit_progress: #comment everything here for play, uncomment for training
+                print("No progress")
+                #reward = -200
+                episode_terminate = True
+                client.R.d['meta'] = True
 
         if np.cos(obs['angle']) < 0: # Episode is terminated if the agent runs backward
             episode_terminate = True
