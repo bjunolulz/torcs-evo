@@ -11,7 +11,7 @@ This is a project with the goal of making an agent for torcs using the genetic a
 7. To run the learned agent change the path in the play_game method and set the train flag to False
 
 ## Exclaimer
-Runs only on Linux, I have not tested it on Windows, maybe try your luck with WSL. There are two files, initial_gen.py and next_gen.py. Use initial_gen.py when starting training for x number of generations, and the continue with next_gens.py to avoid crashing.
+Runs only on Linux, I have not tested it on Windows, maybe try your luck with WSL. There are two files, initial_gen.py and next_gen.py. Use initial_gen.py when starting training for x number of generations, and then continue with next_gens.py to avoid crashing.
 
 ## Problems
 I won't be adding work to this project anymore, but the problems I encountered are the following:
